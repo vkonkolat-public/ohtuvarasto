@@ -38,3 +38,39 @@ class TestVarasto(unittest.TestCase):
 
         # varastossa pitäisi olla tilaa 10 - 8 + 2 eli 4
         self.assertAlmostEqual(self.varasto.paljonko_mahtuu(), 4)
+
+    # Aloitetaan omat testit, tavoitteena 100% coverage kattavuus
+    # Muistio aivoille: assertAlmostEqual koska float-luvut
+
+    def test_mita_jos_uusi_varasto_negatiivinen_tilavuus(self):
+        self.uusi_varasto = Varasto(-10)
+        self.assertAlmostEqual(self.uusi_varasto.tilavuus, 0)
+        # Tässä näyttää saldoksi asettuvan -10 vaikka sen pitäisi olla 0.....
+
+    def test_mita_jos_lisataan_negatiivinen_maara(self):
+        self.varasto.lisaa_varastoon(-5)
+        self.assertAlmostEqual(self.varasto.saldo, 0)
+
+    def test_mita_jos_ota_negatiivinen_maara(self):
+        self.varasto.lisaa_varastoon(5)
+        saatu_maara = self.varasto.ota_varastosta(-3)
+        self.assertAlmostEqual(saatu_maara, 0)
+        self.assertAlmostEqual(self.varasto.saldo, 5)
+
+    def test_mita_jos_negatiivinen_alkusaldo(self):
+        self.uusi_varasto = Varasto(10, -5)
+        self.assertAlmostEqual(self.uusi_varasto.saldo, 0)
+
+    def test_lisays_yli_tilavuuden_tayttaa_varaston(self):
+        self.varasto.lisaa_varastoon(15)
+        self.assertAlmostEqual(self.varasto.saldo, 10)
+
+    def test_ottaminen_yli_saldon_palauttaa_koko_saldon(self):
+        self.varasto.lisaa_varastoon(6)
+        saatu_maara = self.varasto.ota_varastosta(8)
+        self.assertAlmostEqual(saatu_maara, 6)
+        self.assertAlmostEqual(self.varasto.saldo, 0)
+
+    def test_varaston_merkkijonoesitys(self):
+        self.varasto.lisaa_varastoon(4)
+        self.assertEqual(str(self.varasto), "saldo = 4, vielä tilaa 6")
